@@ -38,10 +38,10 @@ python myversion.py
 2. After training, the Q-table is visualized:
 
 * **Heatmap of Q-values** shows the learned value for each state-action pair:
-  ![Q-table Heatmap](Images\heatmap_numberline.png)
+  ![Q-table Heatmap](Images/heatmap_numberline.png)
 
 * **Best action per state** bar chart shows the preferred action for each state:
-  ![Best Action per State](\Images\best_action_numberline.png)
+  ![Best Action per State](Images/best_action_numberline.png)
 
 ---
 
