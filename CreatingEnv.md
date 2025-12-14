@@ -1,24 +1,55 @@
-### Create a virtual environment named venv
+
+## Setting Up the Project
+
+### 1. Create a Virtual Environment
+
+```bash
 python -m venv venv
+```
 
-### Activate the environment to run your files
-#### On Windows
+---
+
+### 2. Activate the Environment
+
+**Windows:**
+
+```bash
 venv\Scripts\activate
+```
 
-#### On Linux 
-Source venv/bin/activate
+**Linux / macOS:**
 
-### Install required packages and libraries using pip
-pip install numpy
-pip install matplotlib
-pip install seaborn
+```bash
+source venv/bin/activate
+```
 
-### Make sure to create a .gitignore before pushing it to any repo
-    # Python virtual environment
-    venv/
-    __pycache__/
-    *.pyc
+---
 
-    # Optional: common Python stuff
-    .env
-    *.pyo
+### 3. Install Required Packages
+
+```bash
+pip install numpy matplotlib seaborn
+```
+
+> These packages are required to run the environment, agent, and visualizations.
+
+---
+
+### 4. Git Ignore Recommendations
+
+Before pushing to a repository, make sure to create a `.gitignore` file:
+
+```
+# Python virtual environment
+venv/
+__pycache__/
+*.pyc
+
+# Optional: common Python files
+.env
+*.pyo
+```
+
+> This prevents committing unnecessary files like virtual environments or compiled Python files.
+
+---
