@@ -1,107 +1,135 @@
-# 2D Grid World Q-Learning Game
+# 2D Grid World Q-Learning (with Obstacles & Stochasticity)
 
-This project extends a **from-scratch tabular Q-learning implementation** from 1D to a **2D grid world**.
-An agent learns to navigate a discrete grid and reach a goal using **explicit Bellman updates** and an **ε-greedy policy** — no RL libraries, no function approximation.
+This project is a **from-scratch tabular Q-learning implementation** in a **2D grid world**.
+An agent learns to navigate around obstacles and reach a goal using **explicit Bellman updates**, **ε-greedy exploration**, and **stochastic transitions** — no RL libraries, no neural networks.
+
+This builds directly on a 1D version and focuses on **intuition, visualization, and correctness**.
 
 ---
 
 ## Environment
 
-* **Grid:** 7 × 7 discrete grid
+* **Grid:** 8 × 8 discrete grid
+
 * **State:** `(x, y)` grid coordinates
+
 * **Actions:**
 
   * Up `(-1, 0)`
   * Down `(1, 0)`
   * Left `(0, -1)`
   * Right `(0, 1)`
-* **Start State:** `(0, 0)` (optionally randomized)
-* **Goal State:** `(0, 6)`
+
+* **Start State:** Randomized (never inside obstacles)
+
+* **Goal State:** `(7, 7)`
+
+* **Obstacles:** Fixed walls forming corridors and dead ends
+
 * **Transitions:**
 
-  * Deterministic movement
+  * **Stochastic dynamics**
+
+    * 80% intended action
+    * 20% random action (noise)
   * States clipped to grid boundaries
-* **Rewards:**
+  * Obstacle collisions revert the move
 
-  * **+10** for reaching the goal
-  * **+1** for moving closer (Manhattan distance)
-  * **−0.1** for moving farther or not improving
-* **Episode ends** only when the goal is reached
+---
 
-Reward shaping creates a smooth value surface that propagates outward from the goal.
+## Rewards (Sparse)
+
+* **+10** for reaching the goal
+* **−0.1** per step otherwise
+* Episode terminates **only on goal reach**
+
+This keeps the reward signal sparse while still encouraging shorter paths.
 
 ---
 
 ## Agent
 
-* **Tabular Q-learning** (no neural networks)
+* **Tabular Q-learning** (no function approximation)
+
 * **Q-table shape:** `(grid_x, grid_y, action)`
-* **Learning rule:** Standard Bellman update with TD error
-* **Discount factor:** Propagates long-term rewards correctly
-* **Exploration:** ε-greedy policy
+
+* **Learning rule:** Standard Bellman update
+
+  [
+  Q(s,a) \leftarrow Q(s,a) + \alpha \left[r + \gamma \max_a Q(s',a) - Q(s,a)\right]
+  ]
+
+* **Exploration:** ε-greedy
 
   * Starts fully random
-  * Gradually shifts toward exploitation via decay
+  * Gradually decays toward exploitation
+
+* **Handles stochastic transitions** naturally through expected value updates
 
 ---
 
 ## Training
 
-* Agent interacts with the environment using:
+* Online learning at every step
+* Randomized starting positions
+* ε decays per episode
+* Optional live visualization during training
 
-  * `reset()`
-  * `step(action)`
-* Learning occurs **online at every transition**
-* ε decays **per episode**
-* Training converges to a shortest-path policy
+Training converges to **robust paths** that tolerate action noise and avoid obstacles.
 
 ---
 
-## Visualization & Verification
+## Visualization
 
-After and during training, the following visualizations are used:
+### 1️⃣ Training Visualization
 
-### 1. Value Map + Policy Arrows
+* Shows agent movement during training
+* Displays:
 
-* **Heatmap:** `V(x, y) = max_a Q(x, y, a)`
-* **Arrows:** Greedy action at each grid cell
-* Confirms:
+  * Obstacles
+  * Path history
+  * Current agent position
+* Automatically closes when the goal is reached
 
-  * Smooth Bellman value propagation
-  * Correct directional flow toward the goal
-  * Symmetry where expected
+### 2️⃣ Test-Time Trajectory Visualization
 
-### 2. Episode Trajectory Animation
-
-* Shows the **agent moving step-by-step** through the grid
+* Runs with **ε = 0 (pure greedy policy)**
 * Visualizes:
 
-  * Exploration vs exploitation
-  * Loops or oscillations
-  * Convergence to direct paths
-* Visualization closes automatically once the goal is reached
+  * Exact policy behavior
+  * Final learned paths
+  * Success from different start states
+
+This separation ensures **learning ≠ evaluation**.
 
 ---
 
 ## How to Run
 
-1. Train the agent:
+Train and test the agent:
 
 ```bash
-python smallGrid.py
+python gridWorld.py
 ```
 
-2. During training:
+During execution:
 
-   * Value maps and policies are visualized every N episodes
-   * Agent motion can be animated for individual episodes
+* Training runs first
+* After training, fixed start states are tested and visualized
 
 ---
 
 ## Files
 
-* `smallGrid.py` — Environment, agent, training loop, and visualizations
-* `README.md` — Project overview and usage instructions
+* `gridWorld.py`
+
+  * Environment definition
+  * Q-learning agent
+  * Training loop
+  * Training & test visualizations
+* `README.md`
+
+  * Project overview and explanation
 
 ---
 
@@ -118,8 +146,10 @@ python smallGrid.py
 This project builds intuition for:
 
 * Bellman value propagation in **2D**
-* How geometry shapes value surfaces
-* The effect of reward shaping on convergence
-* Debugging RL systems visually before scaling up
+* Learning under **stochastic dynamics**
+* Sparse vs shaped rewards
+* Risk-aware navigation near obstacles
+* Why visualization is critical for debugging RL systems
 
 ---
+

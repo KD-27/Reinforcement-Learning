@@ -53,3 +53,15 @@ __pycache__/
 > This prevents committing unnecessary files like virtual environments or compiled Python files.
 
 ---
+
+### 4. Git Tag Recommendations
+```
+# Make sure you're on the right branch
+git checkout main  # or master, depending on your repo
+
+# Create a tag to mark the backup point
+git tag -a backup-v1 -m "Backup before major update"
+
+# Push the tag to remote
+git push origin backup-v1
+```
